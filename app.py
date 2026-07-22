@@ -10,8 +10,7 @@ import streamlit as st
 import streamlit_analytics2 as st_analytics
 
 # התחל מעקב אנליטיקס
-with st_analytics.track():
-    # כל קוד האפליקציה שלך הקיים נכנס לכאן (הכותרות, המשחקים, הטבלאות וכו')
+with st_analytics.track(password="my_secret_password"):    # כל קוד האפליקציה שלך הקיים נכנס לכאן (הכותרות, המשחקים, הטבלאות וכו')
     st.title("NBA Guess The Player")
 # הגדרות עמוד
 st.set_page_config(
