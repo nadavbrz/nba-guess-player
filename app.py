@@ -7,6 +7,12 @@ import unicodedata
 import pandas as pd
 import streamlit as st
 
+import streamlit_analytics2 as st_analytics
+
+# התחל מעקב אנליטיקס
+with st_analytics.track():
+    # כל קוד האפליקציה שלך הקיים נכנס לכאן (הכותרות, המשחקים, הטבלאות וכו')
+    st.title("NBA Guess The Player")
 # הגדרות עמוד
 st.set_page_config(
     page_title="NBA Mystery Player", page_icon="🏀", layout="wide"
