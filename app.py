@@ -7,13 +7,12 @@ import unicodedata
 import pandas as pd
 import streamlit as st
 
-
-# התחל מעקב אנליטיקס
-st.title("NBA Guess The Player")
-# הגדרות עמוד
+# הגדרות עמוד (חייב להיות הקריאה הראשונה של Streamlit)
 st.set_page_config(
     page_title="NBA Mystery Player", page_icon="🏀", layout="wide"
 )
+
+st.title("NBA Guess The Player")
 
 # CSS מקיף לעיצוב Dark Mode
 st.markdown(
@@ -175,22 +174,20 @@ def format_achievements(ach_text):
     if not ach_text or pd.isna(ach_text):
         return "-"
 
-    # המרת קווים תחתונים לרווחים (למשל: CLUTCH_POY -> CLUTCH POY)
     text_cleaned = str(ach_text).replace("_", " ")
-
     parts = [p.strip() for p in text_cleaned.split(",") if p.strip()]
     formatted_parts = []
 
     for part in parts:
         lower_p = part.lower()
-
-        # רק אולסטאר מקבל אימוג'י, כל השאר מוצגים כטקסט נקי
         if "all-star" in lower_p or "all star" in lower_p:
             formatted_parts.append(f"⭐ {part}")
         else:
             formatted_parts.append(part)
 
     return " | ".join(formatted_parts) if formatted_parts else "-"
+
+
 @st.cache_data(ttl=600)
 def get_db_data():
     conn = get_db_connection()
@@ -321,6 +318,14 @@ st.sidebar.info(
     " **+60s** penalty."
 )
 
+# הגדרת רוחב מיוחד לעמודת ההישגים
+df_column_config = {
+    "Awards & Honors": st.column_config.TextColumn(
+        "Awards & Honors",
+        width="large",
+    )
+}
+
 # -----------------------------------------------------------------------------
 # MODE 1: PRACTICE MODE
 # -----------------------------------------------------------------------------
@@ -410,6 +415,7 @@ if game_mode == "🎮 Practice Mode (Free Play)":
     st.dataframe(
         styled_df,
         use_container_width=True,
+        column_config=df_column_config,
         hide_index=True,
         height=calculated_height,
     )
@@ -626,6 +632,7 @@ else:
         st.dataframe(
             styled_df,
             use_container_width=True,
+            column_config=df_column_config,
             hide_index=True,
             height=calculated_height,
         )
