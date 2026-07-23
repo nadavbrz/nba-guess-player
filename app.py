@@ -170,6 +170,14 @@ def clean_string(text):
     return " ".join(cleaned.split())
 
 
+def clean_team_name(team_str):
+    if not team_str or pd.isna(team_str):
+        return "-"
+    # ניקוי סימונים כמו 2TM/, 3TM/, 4TM/
+    cleaned = re.sub(r'^\d+TM/?', '', str(team_str))
+    return cleaned if cleaned else str(team_str)
+
+
 def format_achievements(ach_text):
     if not ach_text or pd.isna(ach_text):
         return "-"
@@ -318,8 +326,12 @@ st.sidebar.info(
     " **+60s** penalty."
 )
 
-# הגדרת רוחב מיוחד לעמודת ההישגים
+# הגדרת רוחב מיועד לעמודת הקבוצה וההישגים
 df_column_config = {
+    "Team": st.column_config.TextColumn(
+        "Team",
+        width="medium",
+    ),
     "Awards & Honors": st.column_config.TextColumn(
         "Awards & Honors",
         width="large",
@@ -353,6 +365,9 @@ if game_mode == "🎮 Practice Mode (Free Play)":
 
     player_stats = get_player_stats(st.session_state.target_player)
     df = pd.DataFrame(player_stats)
+
+    if "Team" in df.columns:
+        df["Team"] = df["Team"].apply(clean_team_name)
 
     if "Awards & Honors" in df.columns:
         df["Awards & Honors"] = df["Awards & Honors"].apply(format_achievements)
@@ -570,6 +585,9 @@ else:
 
         player_stats = get_player_stats(target_p)
         df = pd.DataFrame(player_stats)
+
+        if "Team" in df.columns:
+            df["Team"] = df["Team"].apply(clean_team_name)
 
         if "Awards & Honors" in df.columns:
             df["Awards & Honors"] = df["Awards & Honors"].apply(format_achievements)
